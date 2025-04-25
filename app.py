@@ -85,6 +85,4 @@ with tab2:
     st.markdown("""
 Here are a few resume formats tailored for Product Managers:""")
 
----
-
 ### ✅ Resume Sample 1: Classic PM Resume
