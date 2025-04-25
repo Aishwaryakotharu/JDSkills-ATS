@@ -140,4 +140,4 @@ if uploaded_file:
         with open(f"uploaded_{uploaded_file.name}", "wb") as f:
             f.write(uploaded_file.getbuffer())
 
-    st.markdown("---")
+st.markdown("---")
