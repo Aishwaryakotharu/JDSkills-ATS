@@ -131,13 +131,22 @@ Need more samples or want to upload your resume for feedback? Let us know below!
 """)
 uploaded_file = st.file_uploader("Upload your resume (PDF or DOCX)", type=["pdf", "docx"], key="resume_upload")
 
-if uploaded_file:
-        st.success(f"✅ Uploaded: `{uploaded_file.name}`")
-        st.markdown(f"> ✍️ We'll take a look and get back to you with feedback soon!")
+with st.form("resume_feedback_form"):
+    feedback_text = st.text_area("✍️ Leave your comment or resume feedback request here:")
+    uploaded_resume = st.file_uploader("📎 Upload your resume (PDF or DOCX)", type=["pdf", "docx"])
+    rating = st.slider("⭐ How would you rate our sample resumes?", 1, 5, 4)
 
-        # Optionally save it somewhere or analyze it here
-        # Example: Save uploaded file to disk
-        with open(f"uploaded_{uploaded_file.name}", "wb") as f:
-            f.write(uploaded_file.getbuffer())
+    submitted = st.form_submit_button("Submit Feedback")
 
-st.markdown("---")
+    if submitted:
+        st.success("✅ Thank you! Your feedback has been received.")
+
+        # Echo comment and rating back like a chat message
+        if feedback_text:
+            st.markdown(f"**Your Comment:** {feedback_text}")
+        st.markdown(f"**Your Rating:** {rating} ⭐")
+
+        if uploaded_resume:
+            st.markdown(f"**Uploaded Resume:** `{uploaded_resume.name}`")
+            with open(f"feedback_{uploaded_resume.name}", "wb") as f:
+                f.write(uploaded_resume.getbuffer())
