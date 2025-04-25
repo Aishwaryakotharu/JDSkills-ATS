@@ -81,17 +81,6 @@ Job Description:
 with tab2:
     st.title("📄 Sample Resumes for Product Managers")
 
-    try:
-        image = Image.open("PMResume.jpg")
-        base_width = 900
-        w_percent = base_width / float(image.size[0])
-        h_size = int((float(image.size[1]) * float(w_percent)))
-        resized_image = image.resize((base_width, h_size // 2))
-        st.image(resized_image, caption="📄 PM Resume Template Preview", use_container_width=True)
-
-    except FileNotFoundError:
-        st.warning("⚠️ Resume image not found. Make sure 'PMResume.jpg' is in the same folder as app.py.")
-
     st.markdown("""
 ---
 
@@ -103,8 +92,23 @@ with tab2:
 **LinkedIn:** linkedin.com/in/janedoe
 
 ---
+""")
+
+    try:
+        image = Image.open("PMResume.jpg")
+        base_width = 700  # You can adjust this to your preferred max width
+        w_percent = base_width / float(image.size[0])
+        h_size = int((float(image.size[1]) * float(w_percent)))
+        resized_image = image.resize((base_width, h_size // 2))
+        st.image(resized_image, caption="📄 PM Resume Template Preview", width=base_width)
+    except FileNotFoundError:
+        st.warning("⚠️ Resume image not found. Make sure 'PMResume.jpg' is in the same folder as app.py.")
+
+    st.markdown("""
+---
 
 ### ✅ Downloadable Resume Template
+
 We’ve also included a professional Word document (.docx) template you can customize.
 """)
 
@@ -114,23 +118,8 @@ We’ve also included a professional Word document (.docx) template you can cust
                 label="📥 Download Resume Template (.docx)",
                 data=file,
                 file_name="PM_Resume_Template.docx",
-                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-            )
-    except FileNotFoundError:
-        st.warning("⚠️ Resume template not found. Please ensure '2024-template_bullet.docx' is in the same folder.")
-
-    st.markdown("""
----
-
-Need more samples or want to upload your resume for feedback? Let us know below!
-""")
-    try:
-        with open("2024-template_bullet.docx", "rb") as file:
-            st.download_button(
-                label="📥 Download Resume Template (.docx)",
-                data=file,
-                file_name="PM_Resume_Template.docx",
-                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                key="download_resume_docx"  # ✅ Avoid StreamlitDuplicateElementId error
             )
     except FileNotFoundError:
         st.warning("⚠️ Resume template not found. Please ensure '2024-template_bullet.docx' is in the same folder.")
