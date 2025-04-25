@@ -113,7 +113,7 @@ We’ve also included a professional Word document (.docx) template you can cust
 """)
 
     try:
-        with open("/2024-template_bullet.docx", "rb") as file:
+        with open("2024-template_bullet.docx", "rb") as file:
             st.download_button(
                 label="📥 Download Resume Template (.docx)",
                 data=file,
