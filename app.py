@@ -130,22 +130,21 @@ We’ve also included a professional Word document (.docx) template you can cust
 Need more samples or want to upload your resume for feedback? Let us know below!
 """)
 
-with st.form("resume_feedback_form"):
-    feedback_text = st.text_area("✍️ Leave your comment or resume feedback request here:")
-    uploaded_resume = st.file_uploader("📎 Upload your resume (PDF or DOCX)", type=["pdf", "docx"])
-    rating = st.slider("⭐ How would you rate our sample resumes?", 1, 5, 4)
+with st.form(key="resume_feedback_form_tab2"):
+        feedback_text = st.text_area("✍️ Leave your comment or resume feedback request here:", key="comment_input_tab2")
+        uploaded_resume = st.file_uploader("📎 Upload your resume (PDF or DOCX)", type=["pdf", "docx"], key="upload_input_tab2")
+        rating = st.slider("⭐ How would you rate our sample resumes?", 1, 5, 4, key="rating_slider_tab2")
 
-    submitted = st.form_submit_button("Submit Feedback")
+        submitted = st.form_submit_button("Submit Feedback")
 
-    if submitted:
-        st.success("✅ Thank you! Your feedback has been received.")
+        if submitted:
+            st.success("✅ Thank you! Your feedback has been received.")
 
-        # Echo comment and rating back like a chat message
-        if feedback_text:
-            st.markdown(f"**Your Comment:** {feedback_text}")
-        st.markdown(f"**Your Rating:** {rating} ⭐")
+            if feedback_text:
+                st.markdown(f"**Your Comment:** {feedback_text}")
+            st.markdown(f"**Your Rating:** {rating} ⭐")
 
-        if uploaded_resume:
-            st.markdown(f"**Uploaded Resume:** `{uploaded_resume.name}`")
-            with open(f"feedback_{uploaded_resume.name}", "wb") as f:
-                f.write(uploaded_resume.getbuffer())
+            if uploaded_resume:
+                st.markdown(f"**Uploaded Resume:** `{uploaded_resume.name}`")
+                with open(f"feedback_{uploaded_resume.name}", "wb") as f:
+                    f.write(uploaded_resume.getbuffer())
