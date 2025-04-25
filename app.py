@@ -10,7 +10,7 @@ co = cohere.Client(COHERE_API_KEY)
 
 # Streamlit page setup
 st.set_page_config(page_title="PM JD Skill| SKills Extractor", page_icon="🧠")
-st.title("🧠 Product Manager JD Skill & ATS Extractor")
+st.title("🧠 Product Manager JD Skill | Skills Extractor")
 st.markdown("Paste a job description, and we'll extract required skills **and** the best ATS keywords.")
 
 # Text area input
