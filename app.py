@@ -131,7 +131,7 @@ Need more samples or want to upload your resume for feedback? Let us know below!
 """)
 uploaded_file = st.file_uploader("Upload your resume (PDF or DOCX)", type=["pdf", "docx"], key="resume_upload")
 
-    if uploaded_file:
+if uploaded_file:
         st.success(f"✅ Uploaded: `{uploaded_file.name}`")
         st.markdown(f"> ✍️ We'll take a look and get back to you with feedback soon!")
 
