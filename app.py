@@ -124,3 +124,19 @@ We’ve also included a professional Word document (.docx) template you can cust
 
 Need more samples or want to upload your resume for feedback? Let us know below!
 """)
+    try:
+        with open("2024-template_bullet.docx", "rb") as file:
+            st.download_button(
+                label="📥 Download Resume Template (.docx)",
+                data=file,
+                file_name="PM_Resume_Template.docx",
+                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            )
+    except FileNotFoundError:
+        st.warning("⚠️ Resume template not found. Please ensure '2024-template_bullet.docx' is in the same folder.")
+
+    st.markdown("""
+---
+
+Need more samples or want to upload your resume for feedback? Let us know below!
+""")
