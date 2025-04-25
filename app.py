@@ -80,22 +80,31 @@ Job Description:
 # ---------------- Tab 2: Resume Samples ----------------
 with tab2:
     st.title("📄 Sample Resumes for Product Managers")
-try:
-    image = Image.open("PMResume.jpg")  # Replace with your filename
-    st.image(image, caption="📄 Resume Template Preview", use_column_width=True)
-except FileNotFoundError:
-    st.warning("⚠️ Resume image not found. Make sure the file is in the same folder as app.py.")
+
+    try:
+        image = Image.open("PMResume.jpg")
+        base_width = 900
+        w_percent = base_width / float(image.size[0])
+        h_size = int((float(image.size[1]) * float(w_percent)))
+        resized_image = image.resize((base_width, h_size // 2))
+        st.image(resized_image, caption="📄 PM Resume Template Preview", use_container_width=True)
+
+    except FileNotFoundError:
+        st.warning("⚠️ Resume image not found. Make sure 'PMResume.jpg' is in the same folder as app.py.")
+
     st.markdown("""
-Need inspiration for your PM resume? Check out these examples:
+---
 
 ### ✅ Sample Resume 1: Classic PM Style
-Name: Jane Doe
-Title: Senior Product Manager
-Email: jane.doe@email.com
-LinkedIn: linkedin.com/in/janedoe
+
+**Name:** Jane Doe  
+**Title:** Senior Product Manager  
+**Email:** jane.doe@email.com  
+**LinkedIn:** linkedin.com/in/janedoe
+
+---
 
 ### ✅ Downloadable Resume Template
-
 We’ve also included a professional Word document (.docx) template you can customize.
 """)
 
@@ -108,11 +117,10 @@ We’ve also included a professional Word document (.docx) template you can cust
                 mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
             )
     except FileNotFoundError:
-        st.warning("⚠️ Resume template not found. Please upload the file to `/mnt/data/`.")
+        st.warning("⚠️ Resume template not found. Please ensure '2024-template_bullet.docx' is in the same folder.")
 
     st.markdown("""
 ---
 
 Need more samples or want to upload your resume for feedback? Let us know below!
 """)
-
