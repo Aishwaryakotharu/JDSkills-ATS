@@ -129,3 +129,15 @@ We’ve also included a professional Word document (.docx) template you can cust
 
 Need more samples or want to upload your resume for feedback? Let us know below!
 """)
+uploaded_file = st.file_uploader("Upload your resume (PDF or DOCX)", type=["pdf", "docx"], key="resume_upload")
+
+    if uploaded_file:
+        st.success(f"✅ Uploaded: `{uploaded_file.name}`")
+        st.markdown(f"> ✍️ We'll take a look and get back to you with feedback soon!")
+
+        # Optionally save it somewhere or analyze it here
+        # Example: Save uploaded file to disk
+        with open(f"uploaded_{uploaded_file.name}", "wb") as f:
+            f.write(uploaded_file.getbuffer())
+
+    st.markdown("---")
