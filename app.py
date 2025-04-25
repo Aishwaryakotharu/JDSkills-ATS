@@ -83,7 +83,7 @@ Job Description:
 with tab2:
     st.title("📄 Sample Resumes for Product Managers")
     st.markdown("""
-Here are a few resume formats tailored for Product Managers:
+Here are a few resume formats tailored for Product Managers:""")
 
 ---
 
