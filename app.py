@@ -96,13 +96,13 @@ with tab2:
 
     try:
         image = Image.open("PMResume.jpg")
-        base_width = 700  # You can adjust this to your preferred max width
+        base_width = 700
         w_percent = base_width / float(image.size[0])
         h_size = int((float(image.size[1]) * float(w_percent)))
         resized_image = image.resize((base_width, h_size // 2))
         st.image(resized_image, caption="📄 PM Resume Template Preview", width=base_width)
     except FileNotFoundError:
-        st.warning("⚠️ Resume image not found. Make sure 'PMResume.jpg' is in the same folder as app.py.")
+        st.warning("⚠️ Resume image not found. Make sure 'PMResume.jpg' is in the same folder.")
 
     st.markdown("""
 ---
@@ -119,23 +119,24 @@ We’ve also included a professional Word document (.docx) template you can cust
                 data=file,
                 file_name="PM_Resume_Template.docx",
                 mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                key="download_resume_docx"  # ✅ Avoid StreamlitDuplicateElementId error
+                key="download_resume_docx_tab2"
             )
     except FileNotFoundError:
         st.warning("⚠️ Resume template not found. Please ensure '2024-template_bullet.docx' is in the same folder.")
 
-    st.markdown("""
----
+    st.markdown("---")
 
-Need more samples or want to upload your resume for feedback? Let us know below!
-""")
+    st.markdown("### 💬 Submit Your Feedback or Upload Your Resume for Review")
 
-with st.form(key="resume_feedback_form_tab2"):
-        feedback_text = st.text_area("✍️ Leave your comment or resume feedback request here:", key="comment_input_tab2")
-        uploaded_resume = st.file_uploader("📎 Upload your resume (PDF or DOCX)", type=["pdf", "docx"], key="upload_input_tab2")
+    # 👇 All widgets with tab2-specific keys
+    with st.form(key="resume_feedback_form_tab2"):
+        feedback_text = st.text_area("✍️ Leave your comment or resume feedback request here:",
+                                     key="comment_input_tab2")
+        uploaded_resume = st.file_uploader("📎 Upload your resume (PDF or DOCX)", type=["pdf", "docx"],
+                                           key="upload_input_tab2")
         rating = st.slider("⭐ How would you rate our sample resumes?", 1, 5, 4, key="rating_slider_tab2")
 
-        submitted = st.form_submit_button("Submit Feedback")
+        submitted = st.form_submit_button("Submit Feedback", use_container_width=True)
 
         if submitted:
             st.success("✅ Thank you! Your feedback has been received.")
