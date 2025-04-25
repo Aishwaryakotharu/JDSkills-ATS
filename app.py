@@ -129,7 +129,6 @@ We’ve also included a professional Word document (.docx) template you can cust
 
 Need more samples or want to upload your resume for feedback? Let us know below!
 """)
-uploaded_file = st.file_uploader("Upload your resume (PDF or DOCX)", type=["pdf", "docx"], key="resume_upload")
 
 with st.form("resume_feedback_form"):
     feedback_text = st.text_area("✍️ Leave your comment or resume feedback request here:")
