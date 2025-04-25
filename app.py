@@ -2,6 +2,7 @@ import streamlit as st
 import cohere
 from dotenv import load_dotenv
 import os
+from PIL import Image 
 
 # Load environment variables
 load_dotenv()
@@ -79,7 +80,11 @@ Job Description:
 # ---------------- Tab 2: Resume Samples ----------------
 with tab2:
     st.title("📄 Sample Resumes for Product Managers")
-
+try:
+    image = Image.open("PMResume.jpg")  # Replace with your filename
+    st.image(image, caption="📄 Resume Template Preview", use_column_width=True)
+except FileNotFoundError:
+    st.warning("⚠️ Resume image not found. Make sure the file is in the same folder as app.py.")
     st.markdown("""
 Need inspiration for your PM resume? Check out these examples:
 
@@ -88,24 +93,6 @@ Name: Jane Doe
 Title: Senior Product Manager
 Email: jane.doe@email.com
 LinkedIn: linkedin.com/in/janedoe
-
-🔹 SUMMARY
-Innovative Product Manager with 7+ years of experience leading cross-functional teams...
-
-🔹 SKILLS
-
-Roadmapping, A/B Testing, Agile/Scrum
-
-SQL, Figma, JIRA, Google Analytics
-
-🔹 EXPERIENCE
-Product Manager, Acme Corp (2020–2024)
-
-Led end-to-end development of X platform...
-
-🔹 EDUCATION
-B.S. in Computer Science, XYZ University
-
 
 ### ✅ Downloadable Resume Template
 
