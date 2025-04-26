@@ -1,22 +1,10 @@
 import streamlit as st
-import cohere
-from dotenv import load_dotenv
-import os
+import json
+from datetime import datetime
 from PIL import Image
 
-# Load environment variables
-load_dotenv()
-COHERE_API_KEY = os.getenv("COHERE_API_KEY") or "GKVGjhN6t4MFCsDRtJdheYbT3xzq1QyVFarViQR7"
-co = cohere.Client(COHERE_API_KEY)
-
-# Page configuration
-st.set_page_config(page_title="PM JD Skill | Skills Extractor", page_icon="🧠")
-
-# Define tabs
-tab1, tab2, tab3 = st.tabs(["📝 JD Skill Extractor", "📄 Resume Samples", "💬 Feedback & Discussion Board"])
-
 # ---------------- Tab 1: JD Skill + ATS Extractor ----------------
-with tab1:
+with st.expander("📝 JD Skill Extractor"):
     st.title("🧠 Product Manager JD Skill | Skills Extractor")
     st.markdown("Paste a job description, and we'll extract required skills **and** the best ATS keywords.")
 
@@ -26,59 +14,22 @@ with tab1:
         if not jd_text.strip():
             st.warning("⚠️ Please paste a job description first.")
         else:
-            with st.spinner("Analyzing with Cohere..."):
-                skills_prompt = f"""
-You are a career coach and hiring expert.
+            with st.spinner("Analyzing..."):
+                # Example placeholder for extracting skills and ATS keywords
+                skills_output = "• Product Management\n• Agile\n• Roadmapping"
+                ats_keywords = "Agile, Product Management, Roadmapping, Jira, Scrum"
+                
+                st.success("✅ Skill Breakdown:")
+                st.markdown(skills_output)
 
-From the following Product Manager job description, extract:
-- Required skills (must-have)
-- Nice-to-have skills (optional)
+                st.divider()
 
-Format each as a bullet point list.
+                st.success("🎯 ATS Keywords (for resume optimization):")
+                st.markdown(f"`{ats_keywords}`")
 
-Job Description:
-{jd_text}
-"""
-
-                ats_prompt = f"""
-From the following Product Manager job description, extract a list of ATS-friendly keywords that would help a resume get picked by a recruiter or applicant tracking system.
-
-List up to 15 relevant keywords and tools, as comma-separated values.
-
-Job Description:
-{jd_text}
-"""
-
-                try:
-                    skills_response = co.generate(
-                        model='command',
-                        prompt=skills_prompt,
-                        max_tokens=250,
-                        temperature=0.6
-                    )
-                    skills_output = skills_response.generations[0].text.strip()
-
-                    ats_response = co.generate(
-                        model='command',
-                        prompt=ats_prompt,
-                        max_tokens=100,
-                        temperature=0.5
-                    )
-                    ats_keywords = ats_response.generations[0].text.strip()
-
-                    st.success("✅ Skill Breakdown:")
-                    st.markdown(skills_output)
-
-                    st.divider()
-
-                    st.success("🎯 ATS Keywords (for resume optimization):")
-                    st.markdown(f"`{ats_keywords}`")
-
-                except Exception as e:
-                    st.error(f"❌ Error: {str(e)}")
 
 # ---------------- Tab 2: Resume Samples ----------------
-with tab2:
+with st.expander("📄 Resume Samples"):
     st.title("📄 Sample Resumes for Product Managers")
 
     st.markdown("""---
@@ -122,50 +73,3 @@ We’ve also included a professional Word document (.docx) template you can cust
     except FileNotFoundError:
         st.warning("⚠️ Resume template not found. Please ensure '2024-template_bullet.docx' is in the same folder.")
 
-    st.markdown("---")
-
-    st.markdown("### 💬 Submit Your Feedback or Upload Your Resume for Review")
-
-    with st.form(key="resume_feedback_form_tab2"):
-        feedback_text = st.text_area("✍️ Leave your comment or resume feedback request here:", key="comment_input_tab2")
-        uploaded_resume = st.file_uploader("📎 Upload your resume (PDF or DOCX)", type=["pdf", "docx"], key="upload_input_tab2")
-        rating = st.slider("⭐ How would you rate our sample resumes?", 1, 5, 4, key="rating_slider_tab2")
-
-        submitted = st.form_submit_button("Submit Feedback", use_container_width=True)
-
-        if submitted:
-            st.success("✅ Thank you! Your feedback has been received.")
-
-            if feedback_text:
-                st.markdown(f"**Your Comment:** {feedback_text}")
-            st.markdown(f"**Your Rating:** {rating} ⭐")
-
-            if uploaded_resume:
-                st.markdown(f"**Uploaded Resume:** `{uploaded_resume.name}`")
-                # Store feedback and resume in session state to pass to Tab 3
-                st.session_state.feedback = feedback_text
-                st.session_state.rating = rating
-                st.session_state.uploaded_resume = uploaded_resume
-
-# ---------------- Tab 3: Feedback & Discussion Board ----------------
-with tab3:
-    st.title("💬 Feedback & Discussion Board")
-
-    if "feedback" in st.session_state and st.session_state.feedback:
-        st.subheader("📝 Feedback Given:")
-        st.markdown(f"**Your Feedback:** {st.session_state.feedback}")
-        st.markdown(f"**Your Rating:** {st.session_state.rating} ⭐")
-
-        st.markdown("---")
-
-        # Like and Comment functionality
-        if st.button("👍 Like"):
-            st.success("You liked this submission!")
-
-        # Collect additional comments for interaction
-        comment = st.text_area("💬 Add a comment or feedback:", key="comment_on_submission")
-        if st.button("💬 Submit Comment"):
-            st.success(f"Your comment: `{comment}` has been submitted!")
-
-    else:
-        st.warning("No feedback or resume has been submitted yet.")
