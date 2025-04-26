@@ -13,7 +13,7 @@ co = cohere.Client(COHERE_API_KEY)
 st.set_page_config(page_title="PM JD Skill | Skills Extractor", page_icon="🧠")
 
 # Define tabs
-tab1, tab2, tab3 = st.tabs(["📝 JD Skill Extractor", "📄 Resume Samples", "💬 Feedback & Files"])
+tab1, tab2, tab3 = st.tabs(["📝 JD Skill Extractor", "📄 Resume Samples", "💬 Feedback & Discussion Board"])
 
 # ---------------- Tab 1: JD Skill + ATS Extractor ----------------
 with tab1:
@@ -147,33 +147,25 @@ We’ve also included a professional Word document (.docx) template you can cust
                 st.session_state.rating = rating
                 st.session_state.uploaded_resume = uploaded_resume
 
-# ---------------- Tab 3: Feedback & Files ----------------
+# ---------------- Tab 3: Feedback & Discussion Board ----------------
 with tab3:
-    st.title("💬 Feedback & Resume Review")
+    st.title("💬 Feedback & Discussion Board")
 
     if "feedback" in st.session_state and st.session_state.feedback:
         st.subheader("📝 Feedback Given:")
         st.markdown(f"**Your Feedback:** {st.session_state.feedback}")
         st.markdown(f"**Your Rating:** {st.session_state.rating} ⭐")
 
-        if st.session_state.uploaded_resume:
-            st.markdown(f"**Uploaded Resume:** `{st.session_state.uploaded_resume.name}`")
-            st.download_button(
-                label="📥 Download Your Resume",
-                data=st.session_state.uploaded_resume,
-                file_name=st.session_state.uploaded_resume.name,
-                mime="application/pdf" if st.session_state.uploaded_resume.type == "application/pdf" else "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-            )
+        st.markdown("---")
 
-            st.markdown("---")
-            # Like and Comment functionality
-            if st.button("👍 Like"):
-                st.success("You liked this submission!")
+        # Like and Comment functionality
+        if st.button("👍 Like"):
+            st.success("You liked this submission!")
 
-            # Collect additional comments for interaction
-            comment = st.text_area("💬 Add a comment or feedback:", key="comment_on_submission")
-            if st.button("💬 Submit Comment"):
-                st.success(f"Your comment: `{comment}` has been submitted!")
+        # Collect additional comments for interaction
+        comment = st.text_area("💬 Add a comment or feedback:", key="comment_on_submission")
+        if st.button("💬 Submit Comment"):
+            st.success(f"Your comment: `{comment}` has been submitted!")
 
     else:
         st.warning("No feedback or resume has been submitted yet.")
