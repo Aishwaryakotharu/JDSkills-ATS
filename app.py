@@ -73,3 +73,76 @@ We’ve also included a professional Word document (.docx) template you can cust
     except FileNotFoundError:
         st.warning("⚠️ Resume template not found. Please ensure '2024-template_bullet.docx' is in the same folder.")
 
+    st.markdown("---")
+
+    st.markdown("### 💬 Submit Your Feedback or Upload Your Resume for Review")
+
+    with st.form(key="resume_feedback_form_tab2"):
+        feedback_text = st.text_area("✍️ Leave your comment or resume feedback request here:", key="comment_input_tab2")
+        uploaded_resume = st.file_uploader("📎 Upload your resume (PDF or DOCX)", type=["pdf", "docx"], key="upload_input_tab2")
+        rating = st.slider("⭐ How would you rate our sample resumes?", 1, 5, 4, key="rating_slider_tab2")
+
+        submitted = st.form_submit_button("Submit Feedback", use_container_width=True)
+
+        if submitted:
+            st.success("✅ Thank you! Your feedback has been received.")
+
+            if feedback_text:
+                st.markdown(f"**Your Comment:** {feedback_text}")
+            st.markdown(f"**Your Rating:** {rating} ⭐")
+
+            if uploaded_resume:
+                st.markdown(f"**Uploaded Resume:** `{uploaded_resume.name}`")
+
+                # Save feedback and resume to the JSON file
+                data = {
+                    "comment": feedback_text,
+                    "rating": rating,
+                    "file_name": uploaded_resume.name,
+                    "timestamp": str(datetime.now())
+                }
+                
+                # Load existing feedback or initialize an empty list
+                try:
+                    with open('feedback_data.json', 'r') as f:
+                        feedback_data = json.load(f)
+                except FileNotFoundError:
+                    feedback_data = []
+
+                # Add new feedback to the list
+                feedback_data.append(data)
+
+                # Save updated feedback list back to JSON
+                with open('feedback_data.json', 'w') as f:
+                    json.dump(feedback_data, f)
+
+# ---------------- Tab 3: Feedback & Discussion Board ----------------
+with st.expander("💬 Feedback & Discussion Board"):
+    st.title("💬 Feedback & Discussion Board")
+
+    # Load all feedback from JSON file
+    try:
+        with open('feedback_data.json', 'r') as f:
+            feedback_data = json.load(f)
+    except FileNotFoundError:
+        feedback_data = []
+
+    if feedback_data:
+        for feedback in feedback_data:
+            st.subheader(f"📝 Comment from {feedback['timestamp']}")
+            st.markdown(f"**Feedback:** {feedback['comment']}")
+            st.markdown(f"**Rating:** {feedback['rating']} ⭐")
+            st.markdown(f"**Resume Submitted:** `{feedback['file_name']}`")
+            st.markdown("---")
+
+            # Like functionality
+            if st.button("👍 Like", key=feedback['timestamp']):
+                st.success("You liked this submission!")
+
+            # Comment on the feedback
+            comment = st.text_area("💬 Add a comment or feedback:", key=f"comment_{feedback['timestamp']}")
+            if st.button("💬 Submit Comment", key=f"submit_comment_{feedback['timestamp']}"):
+                st.success(f"Your comment: `{comment}` has been submitted!")
+
+    else:
+        st.warning("No feedback or resumes have been submitted yet.")
