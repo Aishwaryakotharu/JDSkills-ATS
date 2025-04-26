@@ -4,11 +4,14 @@ import os
 from datetime import datetime
 from PIL import Image
 
-# Set the path for the feedback CSV file
-feedback_path = "user_feedback.csv"
+# Page configuration to ensure the layout is wide
+st.set_page_config(page_title="PM JD Skill | Skills Extractor", page_icon="🧠", layout="wide")
+
+# Define tabs (horizontal)
+tab1, tab2, tab3 = st.tabs(["📝 JD Skill Extractor", "📄 Resume Samples", "💬 Feedback & Discussion Board"])
 
 # ---------------- Tab 1: JD Skill + ATS Extractor ----------------
-with st.expander("📝 JD Skill Extractor"):
+with tab1:
     st.title("🧠 Product Manager JD Skill | Skills Extractor")
     st.markdown("Paste a job description, and we'll extract required skills **and** the best ATS keywords.")
 
@@ -33,7 +36,7 @@ with st.expander("📝 JD Skill Extractor"):
 
 
 # ---------------- Tab 2: Resume Samples ----------------
-with st.expander("📄 Resume Samples"):
+with tab2:
     st.title("📄 Sample Resumes for Product Managers")
 
     st.markdown("""---
@@ -106,7 +109,7 @@ We’ve also included a professional Word document (.docx) template you can cust
 
 
 # ---------------- Tab 3: Feedback & Discussion Board ----------------
-with st.expander("💬 Feedback & Discussion Board"):
+with tab3:
     st.title("💬 Feedback & Discussion Board")
 
     st.subheader("💬 What Users Are Saying")
