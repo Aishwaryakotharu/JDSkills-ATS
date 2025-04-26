@@ -2,7 +2,7 @@ import streamlit as st
 import cohere
 from dotenv import load_dotenv
 import os
-from PIL import Image 
+from PIL import Image
 
 # Load environment variables
 load_dotenv()
@@ -13,7 +13,7 @@ co = cohere.Client(COHERE_API_KEY)
 st.set_page_config(page_title="PM JD Skill | Skills Extractor", page_icon="🧠")
 
 # Define tabs
-tab1, tab2 = st.tabs(["📝 JD Skill Extractor", "📄 Resume Samples"])
+tab1, tab2, tab3 = st.tabs(["📝 JD Skill Extractor", "📄 Resume Samples", "💬 Feedback & Files"])
 
 # ---------------- Tab 1: JD Skill + ATS Extractor ----------------
 with tab1:
@@ -81,9 +81,7 @@ Job Description:
 with tab2:
     st.title("📄 Sample Resumes for Product Managers")
 
-    st.markdown("""
----
-
+    st.markdown("""---
 ### ✅ Sample Resume 1: Classic PM Style
 
 **Name:** Jane Doe  
@@ -128,12 +126,9 @@ We’ve also included a professional Word document (.docx) template you can cust
 
     st.markdown("### 💬 Submit Your Feedback or Upload Your Resume for Review")
 
-    # 👇 All widgets with tab2-specific keys
     with st.form(key="resume_feedback_form_tab2"):
-        feedback_text = st.text_area("✍️ Leave your comment or resume feedback request here:",
-                                     key="comment_input_tab2")
-        uploaded_resume = st.file_uploader("📎 Upload your resume (PDF or DOCX)", type=["pdf", "docx"],
-                                           key="upload_input_tab2")
+        feedback_text = st.text_area("✍️ Leave your comment or resume feedback request here:", key="comment_input_tab2")
+        uploaded_resume = st.file_uploader("📎 Upload your resume (PDF or DOCX)", type=["pdf", "docx"], key="upload_input_tab2")
         rating = st.slider("⭐ How would you rate our sample resumes?", 1, 5, 4, key="rating_slider_tab2")
 
         submitted = st.form_submit_button("Submit Feedback", use_container_width=True)
@@ -147,5 +142,38 @@ We’ve also included a professional Word document (.docx) template you can cust
 
             if uploaded_resume:
                 st.markdown(f"**Uploaded Resume:** `{uploaded_resume.name}`")
-                with open(f"feedback_{uploaded_resume.name}", "wb") as f:
-                    f.write(uploaded_resume.getbuffer())
+                # Store feedback and resume in session state to pass to Tab 3
+                st.session_state.feedback = feedback_text
+                st.session_state.rating = rating
+                st.session_state.uploaded_resume = uploaded_resume
+
+# ---------------- Tab 3: Feedback & Files ----------------
+with tab3:
+    st.title("💬 Feedback & Resume Review")
+
+    if "feedback" in st.session_state and st.session_state.feedback:
+        st.subheader("📝 Feedback Given:")
+        st.markdown(f"**Your Feedback:** {st.session_state.feedback}")
+        st.markdown(f"**Your Rating:** {st.session_state.rating} ⭐")
+
+        if st.session_state.uploaded_resume:
+            st.markdown(f"**Uploaded Resume:** `{st.session_state.uploaded_resume.name}`")
+            st.download_button(
+                label="📥 Download Your Resume",
+                data=st.session_state.uploaded_resume,
+                file_name=st.session_state.uploaded_resume.name,
+                mime="application/pdf" if st.session_state.uploaded_resume.type == "application/pdf" else "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            )
+
+            st.markdown("---")
+            # Like and Comment functionality
+            if st.button("👍 Like"):
+                st.success("You liked this submission!")
+
+            # Collect additional comments for interaction
+            comment = st.text_area("💬 Add a comment or feedback:", key="comment_on_submission")
+            if st.button("💬 Submit Comment"):
+                st.success(f"Your comment: `{comment}` has been submitted!")
+
+    else:
+        st.warning("No feedback or resume has been submitted yet.")
