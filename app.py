@@ -3,14 +3,8 @@ import json
 from datetime import datetime
 from PIL import Image
 
-# Page configuration with horizontal tabs
-st.set_page_config(page_title="PM JD Skill | Skills Extractor", page_icon="🧠", layout="wide")
-
-# Define tabs (horizontal)
-tab1, tab2, tab3 = st.tabs(["📝 JD Skill Extractor", "📄 Resume Samples", "💬 Feedback & Discussion Board"])
-
 # ---------------- Tab 1: JD Skill + ATS Extractor ----------------
-with tab1:
+with st.expander("📝 JD Skill Extractor"):
     st.title("🧠 Product Manager JD Skill | Skills Extractor")
     st.markdown("Paste a job description, and we'll extract required skills **and** the best ATS keywords.")
 
@@ -35,7 +29,7 @@ with tab1:
 
 
 # ---------------- Tab 2: Resume Samples ----------------
-with tab2:
+with st.expander("📄 Resume Samples"):
     st.title("📄 Sample Resumes for Product Managers")
 
     st.markdown("""---
@@ -123,7 +117,7 @@ We’ve also included a professional Word document (.docx) template you can cust
                     json.dump(feedback_data, f)
 
 # ---------------- Tab 3: Feedback & Discussion Board ----------------
-with tab3:
+with st.expander("💬 Feedback & Discussion Board"):
     st.title("💬 Feedback & Discussion Board")
 
     # Load all feedback from JSON file
