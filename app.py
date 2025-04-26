@@ -99,3 +99,38 @@ We’ve also included a professional Word document (.docx) template you can cust
         comment = st.text_area("Leave a comment")
         submit_feedback = st.form_submit_button("Submit Feedback")
 
+        if submit_feedback:
+            feedback_df = pd.DataFrame([{
+                "Name": reviewer_name,
+                "Role": user_role,
+                "Rating": rating,
+                "Comment": comment
+            }])
+
+            # If feedback file exists, append; otherwise, create a new one
+            if os.path.exists(feedback_path):
+                existing_df = pd.read_csv(feedback_path)
+                feedback_df = pd.concat([existing_df, feedback_df], ignore_index=True)
+
+            feedback_df.to_csv(feedback_path, index=False)
+            st.success("✅ Thank you for your feedback!")
+
+
+# ---------------- Tab 3: Feedback & Discussion Board ----------------
+with tab3:
+    st.title("💬 Feedback & Discussion Board")
+
+    st.subheader("💬 What Users Are Saying")
+
+    # Load feedback data from the CSV file if it exists
+    if os.path.exists(feedback_path):
+        reviews_df = pd.read_csv(feedback_path)
+        # Show last 5 reviews
+        for _, row in reviews_df.tail(5).iterrows():
+            st.markdown(f"**A {row['Role'].lower()} says:**")
+            st.markdown(f"“{row['Comment']}”")
+            st.markdown(f"⭐ {row['Rating']}/5")
+            st.markdown("---")
+    else:
+        st.info("No reviews yet — be the first to share feedback!")
+
