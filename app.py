@@ -1,16 +1,14 @@
 import streamlit as st
-import json
+import pandas as pd
+import os
 from datetime import datetime
 from PIL import Image
 
-# Page configuration with horizontal tabs
-st.set_page_config(page_title="PM JD Skill | Skills Extractor", page_icon="🧠", layout="wide")
-
-# Define tabs (horizontal)
-tab1, tab2, tab3 = st.tabs(["📝 JD Skill Extractor", "📄 Resume Samples", "💬 Feedback & Discussion Board"])
+# Set the path for the feedback CSV file
+feedback_path = "user_feedback.csv"
 
 # ---------------- Tab 1: JD Skill + ATS Extractor ----------------
-with tab1:
+with st.expander("📝 JD Skill Extractor"):
     st.title("🧠 Product Manager JD Skill | Skills Extractor")
     st.markdown("Paste a job description, and we'll extract required skills **and** the best ATS keywords.")
 
@@ -35,7 +33,7 @@ with tab1:
 
 
 # ---------------- Tab 2: Resume Samples ----------------
-with tab2:
+with st.expander("📄 Resume Samples"):
     st.title("📄 Sample Resumes for Product Managers")
 
     st.markdown("""---
@@ -84,71 +82,43 @@ We’ve also included a professional Word document (.docx) template you can cust
     st.markdown("### 💬 Submit Your Feedback or Upload Your Resume for Review")
 
     with st.form(key="resume_feedback_form_tab2"):
-        feedback_text = st.text_area("✍️ Leave your comment or resume feedback request here:", key="comment_input_tab2")
-        uploaded_resume = st.file_uploader("📎 Upload your resume (PDF or DOCX)", type=["pdf", "docx"], key="upload_input_tab2")
-        rating = st.slider("⭐ How would you rate our sample resumes?", 1, 5, 4, key="rating_slider_tab2")
+        reviewer_name = st.text_input("Your Name (Optional)")
+        user_role = st.selectbox("I am a...", ["Job Seeker", "Recruiter", "Other"])
+        rating = st.slider("How would you rate our sample resumes?", 1, 5, value=5)
+        comment = st.text_area("Leave a comment")
+        submit_feedback = st.form_submit_button("Submit Feedback")
 
-        submitted = st.form_submit_button("Submit Feedback", use_container_width=True)
+        if submit_feedback:
+            feedback_df = pd.DataFrame([{
+                "Name": reviewer_name,
+                "Role": user_role,
+                "Rating": rating,
+                "Comment": comment
+            }])
 
-        if submitted:
-            st.success("✅ Thank you! Your feedback has been received.")
+            # If feedback file exists, append; otherwise, create a new one
+            if os.path.exists(feedback_path):
+                existing_df = pd.read_csv(feedback_path)
+                feedback_df = pd.concat([existing_df, feedback_df], ignore_index=True)
 
-            if feedback_text:
-                st.markdown(f"**Your Comment:** {feedback_text}")
-            st.markdown(f"**Your Rating:** {rating} ⭐")
+            feedback_df.to_csv(feedback_path, index=False)
+            st.success("✅ Thank you for your feedback!")
 
-            if uploaded_resume:
-                st.markdown(f"**Uploaded Resume:** `{uploaded_resume.name}`")
-
-                # Save feedback and resume to the JSON file
-                data = {
-                    "comment": feedback_text,
-                    "rating": rating,
-                    "file_name": uploaded_resume.name,
-                    "timestamp": str(datetime.now())
-                }
-                
-                # Load existing feedback or initialize an empty list
-                try:
-                    with open('feedback_data.json', 'r') as f:
-                        feedback_data = json.load(f)
-                except FileNotFoundError:
-                    feedback_data = []
-
-                # Add new feedback to the list
-                feedback_data.append(data)
-
-                # Save updated feedback list back to JSON
-                with open('feedback_data.json', 'w') as f:
-                    json.dump(feedback_data, f)
 
 # ---------------- Tab 3: Feedback & Discussion Board ----------------
-with tab3:
+with st.expander("💬 Feedback & Discussion Board"):
     st.title("💬 Feedback & Discussion Board")
 
-    # Load all feedback from JSON file
-    try:
-        with open('feedback_data.json', 'r') as f:
-            feedback_data = json.load(f)
-    except FileNotFoundError:
-        feedback_data = []
+    st.subheader("💬 What Users Are Saying")
 
-    if feedback_data:
-        for feedback in feedback_data:
-            st.subheader(f"📝 Comment from {feedback['timestamp']}")
-            st.markdown(f"**Feedback:** {feedback['comment']}")
-            st.markdown(f"**Rating:** {feedback['rating']} ⭐")
-            st.markdown(f"**Resume Submitted:** `{feedback['file_name']}`")
+    # Load feedback data from the CSV file if it exists
+    if os.path.exists(feedback_path):
+        reviews_df = pd.read_csv(feedback_path)
+        # Show last 5 reviews
+        for _, row in reviews_df.tail(5).iterrows():
+            st.markdown(f"**A {row['Role'].lower()} says:**")
+            st.markdown(f"“{row['Comment']}”")
+            st.markdown(f"⭐ {row['Rating']}/5")
             st.markdown("---")
-
-            # Like functionality
-            if st.button("👍 Like", key=feedback['timestamp']):
-                st.success("You liked this submission!")
-
-            # Comment on the feedback
-            comment = st.text_area("💬 Add a comment or feedback:", key=f"comment_{feedback['timestamp']}")
-            if st.button("💬 Submit Comment", key=f"submit_comment_{feedback['timestamp']}"):
-                st.success(f"Your comment: `{comment}` has been submitted!")
-
     else:
-        st.warning("No feedback or resumes have been submitted yet.")
+        st.info("No reviews yet — be the first to share feedback!")
